@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Template • TodoMVC</title>
+		<link rel="stylesheet" href="node_modules/todomvc-common/base.css">
+		<link rel="stylesheet" href="node_modules/todomvc-app-css/index.css">
+		<link rel="stylesheet" href="css/app.css">
+		<script type="text/javascript" src="./node_modules/vue/dist/vue.js"></script>
+	</head>
+	<body>
+		<section class="todoapp">
+			<header class="header">
+				<h1>todos</h1>
+				<input class="new-todo" placeholder="What needs to be done?" v-model="newTodo" @keyup.enter="createTodo" v-focus>
+			</header>
+			<template v-show="todos.length" v-cloak>
+				<section class="main">
+					<input id="toggle-all" class="toggle-all" type="checkbox" v-model="isToggleAll">
+					<label for="toggle-all">Mark all as complete</label>
+					<ul class="todo-list" v-for="(todo, index) in todo_show" :key="index">
+						<li :class="{completed: todo.completed, editing: curEdit === todo.text}">
+							<div class="view">
+								<input class="toggle" type="checkbox" v-model="todo.completed">
+								<label @dblclick="curEdit = todo.text">{{todo.text}}</label>
+								<button class="destroy" @click="todos.splice(index, 1)"></button>
+							</div>
+							<input class="edit" :value="todo.text" @keyup.enter="editComplete(todo, index, $event)" @blur="editComplete(todo, index, $event)" @keyup.esc="curEdit = null" v-editing-focus>
+						</li>
+					</ul>
+				</section>
+				<footer class="footer">
+					<!-- 我看官方源码和我方法一样，但之前看其他人有用过filter，这个不是和strong样式冲突吗？怎么解决的？ -->
+					<span class="todo-count"><strong>{{leftNum}}</strong> {{leftNum | pluralize}} left</span>
+					<ul class="filters">
+						<li><a :class="{selected: tag == '/'}" href="#/">All</a></li>
+						<li><a :class="{selected: tag == '/active'}" href="#/active">Active</a></li>
+						<li><a :class="{selected: tag == '/completed'}" href="#/completed">Completed</a></li>
+					</ul>
+<!-- 					<button class="clear-completed" v-show="(todos.length - leftNum) !== 0" @click="todos = todos.filter(item => !item.completed)">Clear completed</button> -->
+					<!-- 如果该函数对任一项返回 true，则返回 true -->
+					<button class="clear-completed" v-show="todos.some(item => item.completed)" @click="todos = todos.filter(item => !item.completed)">Clear completed</button>
+				</footer>
+			</template>
+		</section>
+		<footer class="info">
+			<p>Double-click to edit a todo</p>
+			<p>Template by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
+			<p>Created by <a href="http://todomvc.com">you</a></p>
+			<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+		</footer>
+		<script src="node_modules/todomvc-common/base.js"></script>
+		<!-- 分成两个文件 -->
+<!-- 		<script src="js/store.js"></script>
+<script src="js/app.js"></script> -->
+		<!-- 合并到一个文件 -->
+		<script src="js/app+store.js"></script>
+	</body>
+</html>
